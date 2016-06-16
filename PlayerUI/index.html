@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Aristrocat Player Exercise</title>
+	<meta charset="utf-8" />
+
+    <!-- Style sheets -->
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+</head>
+<body ng-app="playerApp">
+    <div class="container" ng-controller="mainCtrl as vm">
+        <form name="searchForm" class="form-horizontal">
+            <fieldset>
+                <legend>Search Player</legend>
+                <div class="form-group row">
+                    <label for="inputFirstName" class="col-md-2 control-label">First Name</label>
+                    <div class="col-md-6">
+                        <input type="text" id="inputFirstName" name="inputFirstName" ng-model="vm.search.firstName" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputLastName" class="col-md-2 control-label">Last Name</label>
+                    <div class="col-md-6">
+                        <input type="text" id="inputLastName" name="inputLastName" ng-model="vm.search.lastName" />
+                    </div>
+                </div>    
+                <div class="form-group row">
+                    <button type="submit" class="btn btn-info col-md-offset-6" ng-click="vm.searchPlayers()">Search</button>
+                    <button type="button" class="btn btn-success" ng-click="vm.resetSearch();">Reset</button>
+                </div>
+            </fieldset>            
+        </form>
+        <fieldset>
+            <legend>{{vm.title}}</legend>
+            <table class="table table-condensed table-hover table-bordered table-striped">
+                <thead>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Birth Date</th>
+                    <th>IPL Price</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="player in vm.players" ng-switch on="player.id === vm.selectedPlayer.id">
+                        <td style="width:45px;">
+                            <span ng-switch-when="false">
+                                {{player.id}}
+                            </span>
+                            <span ng-switch-when="true">
+                                <input type="number" ng-model="vm.selectedPlayer.id" disabled style="width:30px;" />
+                            </span>
+                        </td>
+                        <td style="width:180px;">
+                            <span ng-switch-when="false">
+                                {{player.firstName}}
+                            </span>
+                            <span ng-switch-when="true">
+                                <input type="text" ng-model="vm.selectedPlayer.firstName" style="width:160px;" />
+                            </span>
+                        </td>
+                        <td style="width:180px;">
+                            <span ng-switch-when="false">
+                                {{player.lastName}}
+                            </span>
+                            <span ng-switch-when="true">
+                                <input type="text" ng-model="vm.selectedPlayer.lastName" style="width:160px;" />
+                            </span>
+                        </td>
+                        <td style="width:200px;">
+                            <span ng-switch-when="false">
+                                {{player.dateOfBirth | date}}
+                            </span>
+                            <span ng-switch-when="true">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <input class="form-control" id="inputDateOfBirth" type="text" 
+                                                   datepicker-popup="MMM dd, yyyy" is-open="vm.calOpened"
+                                                   ng-model="vm.selectedPlayer.dateOfBirth" style="width:120px;" />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-default" ng-click="vm.open($event)">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </td>
+                        <td style="width:100px;">
+                            <span ng-switch-when="false">
+                                {{player.iplPrice | number}}
+                            </span>
+                            <span ng-switch-when="true">
+                                <input type="number" ng-model="vm.selectedPlayer.iplPrice" style="width:80px;" />
+                            </span>
+                        </td>
+                        <td>
+                            <button style="width:100px;" ng-switch-when="false" type="button" class="btn btn-primary" ng-click="vm.selectionChanged(player);">Edit</button>
+                            <button style="width:100px;" ng-switch-when="true" type="button" class="btn btn-primary" ng-click="vm.selectionCancel();">Cancel</button>
+                            <button style="width:100px;" ng-switch-when="false" type="button" class="btn btn-danger" ng-click="vm.deletePlayer(player)">Delete</button>
+                            <button style="width:100px;" ng-switch-when="true" type="button" class="btn btn-info" ng-click="vm.savePlayer(vm.selectedPlayer);">Save</button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot ng-if="vm.addNewRecord">
+                    <td></td>
+                    <td>
+                        <input type="text" ng-model="vm.newPlayer.firstName" style="width:160px;" />
+                    </td>
+                    <td>
+                        <input type="text" ng-model="vm.newPlayer.lastName" style="width:160px;" />
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input class="form-control" id="inputDateOfBirth" type="text"
+                                           datepicker-popup="MMM dd, yyyy" is-open="vm.calOpened"
+                                           ng-model="vm.newPlayer.dateOfBirth" style="width:120px;" />
+                                </td>
+                                <td>
+                                    <button class="btn btn-default" ng-click="vm.open($event)">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <input type="number" ng-model="vm.newPlayer.iplPrice" style="width:80px;" />
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" ng-click="vm.SaveNew(vm.newPlayer);">Save</button>
+                        <button class="btn btn-info" ng-click="vm.SaveCancel(vm.newPlayer);">Cancel</button>
+                    </td>
+                </tfoot>
+            </table>
+            <button class="btn btn-default" ng-click="vm.addNew();">Add New</button>
+        </fieldset>
+    </div>
+
+    <!-- Library Scripts -->
+    <script src="Scripts/jquery-1.9.0.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <script src="Scripts/angular.js"></script>
+    <script src="Scripts/angular-resource.js"></script>
+    <script src="Scripts/ui-utils.js"></script>
+    <script src="Scripts/ui-bootstrap-tpls-0.11.0.js"></script>    
+
+    <!-- Services -->
+    <script src="app/common/common.services.js"></script>
+    <script src="app/common/playerResource.js"></script>
+
+    <!-- Application Script -->
+    <script src="app/app.js"></script>
+    <script src="app/mainCtrl.js"></script>
+</body>
+</html>
